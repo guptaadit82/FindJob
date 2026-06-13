@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Website Preview Studio</title>
+
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f8;
+      --surface: #ffffff;
+      --surface-soft: #f8fafb;
+      --ink: #18181b;
+      --muted: #667085;
+      --muted-strong: #475467;
+      --line: #d9e0e8;
+      --accent: #0f766e;
+      --accent-strong: #115e59;
+      --blue: #2563eb;
+      --danger: #b42318;
+      --warning: #b54708;
+      --shadow: 0 18px 45px rgba(17, 24, 39, 0.12);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(245, 247, 248, 0.92)),
+        linear-gradient(135deg, #eef8f4 0%, #f7f5ef 48%, #eef2f8 100%);
+      color: var(--ink);
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px clamp(16px, 3vw, 36px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(14px);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      min-width: 0;
+      gap: 14px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #1f7a49);
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0;
+      box-shadow: 0 12px 26px rgba(15, 118, 110, 0.24);
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      color: #101828;
+      font-size: 28px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .header-meta {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .metric {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      min-height: 38px;
+      padding: 8px 11px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.84);
+      color: var(--muted-strong);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .metric strong {
+      color: #101828;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .command-bar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(240px, 380px);
+      align-items: center;
+      gap: 12px;
+      padding: 12px clamp(16px, 3vw, 36px);
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: saturate(160%) blur(16px);
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .control,
+    .card-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      padding: 9px 13px;
+      background: #ffffff;
+      color: #1f2937;
+      font-size: 14px;
+      font-weight: 750;
+      line-height: 1;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 160ms ease, border-color 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    .control:hover,
+    .card-action:hover {
+      transform: translateY(-1px);
+    }
+
+    .control.primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 9px 20px rgba(15, 118, 110, 0.22);
+    }
+
+    .control.primary:hover {
+      background: var(--accent-strong);
+    }
+
+    .control.secondary,
+    .card-action {
+      border-color: var(--line);
+      background: #ffffff;
+    }
+
+    .control.secondary:hover,
+    .card-action:hover {
+      border-color: #b9c4d0;
+      background: #f9fafb;
+    }
+
+    .control.danger {
+      border-color: #f1c5bf;
+      color: var(--danger);
+      background: #fff7f5;
+    }
+
+    .control.danger:hover {
+      border-color: #e7a39a;
+      background: #fff1ee;
+    }
+
+    .icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      flex: 0 0 auto;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .search-box {
+      position: relative;
+      min-width: 0;
+    }
+
+    .search-box .icon {
+      position: absolute;
+      top: 50%;
+      left: 13px;
+      color: #8a95a3;
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    #urlFilter {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      outline: none;
+      background: #ffffff;
+      color: var(--ink);
+      padding: 0 12px 0 40px;
+      font-size: 14px;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    #urlFilter:focus,
+    textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .status-line {
+      grid-column: 1 / -1;
+      min-height: 18px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .main {
+      width: 100%;
+      padding: 18px clamp(12px, 3vw, 36px) 36px;
+    }
+
+    .stack {
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      display: flex;
+      width: 100%;
+      height: calc(100vh - 154px);
+      min-height: 620px;
+      max-height: 940px;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      min-height: 66px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff, #fbfcfd);
+    }
+
+    .card-title {
+      display: flex;
+      align-items: flex-start;
+      min-width: 0;
+      gap: 10px;
+    }
+
+    .index-badge {
+      display: grid;
+      width: 30px;
+      height: 30px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: var(--radius);
+      background: #eaf7f3;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .site-meta {
+      min-width: 0;
+    }
+
+    .hostname {
+      margin: 0;
+      color: #101828;
+      font-size: 14px;
+      font-weight: 850;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .url-link {
+      display: block;
+      max-width: min(900px, 64vw);
+      margin-top: 3px;
+      overflow: hidden;
+      color: var(--muted-strong);
+      font-size: 12px;
+      line-height: 1.35;
+      text-decoration: none;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .url-link:hover {
+      color: var(--blue);
+      text-decoration: underline;
+    }
+
+    .card-actions {
+      display: flex;
+      flex: 0 0 auto;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .card-action {
+      min-height: 34px;
+      padding: 8px 10px;
+      color: #344054;
+      font-size: 12px;
+    }
+
+    .card-action.open {
+      border-color: rgba(15, 118, 110, 0.25);
+      color: var(--accent);
+      background: #f0f9f7;
+    }
+
+    .frame-box {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      background: #e8edf2;
+    }
+
+    .frame-loading {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.54), rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.54)),
+        #eef2f6;
+      color: var(--muted);
+      font-size: 13px;
+      pointer-events: none;
+      transition: opacity 180ms ease, visibility 180ms ease;
+    }
+
+    .frame-box.loaded .frame-loading {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    iframe {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: #ffffff;
+    }
+
+    .card-footer {
+      display: flex;
+      min-height: 38px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 14px;
+      border-top: 1px solid var(--line);
+      background: #fcfcfd;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      max-width: 100%;
+      border: 1px solid #d8efe8;
+      border-radius: 999px;
+      background: #f2fbf7;
+      color: var(--accent-strong);
+      padding: 3px 9px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .empty-state {
+      display: grid;
+      min-height: 360px;
+      place-items: center;
+      border: 1px dashed #b8c4d1;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.82);
+      padding: 32px;
+      text-align: center;
+      color: var(--muted-strong);
+    }
+
+    .empty-state h2 {
+      margin: 0 0 8px;
+      color: #101828;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+
+    .empty-state p {
+      max-width: 520px;
+      margin: 0 0 18px;
+      line-height: 1.55;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background: rgba(24, 24, 27, 0.62);
+      opacity: 0;
+      transition: opacity 160ms ease;
+    }
+
+    .modal-backdrop.show {
+      opacity: 1;
+    }
+
+    .modal {
+      width: min(920px, 100%);
+      max-height: min(760px, calc(100vh - 36px));
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: var(--radius);
+      background: #ffffff;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.34);
+      transform: translateY(8px) scale(0.985);
+      transition: transform 160ms ease;
+    }
+
+    .modal-backdrop.show .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-header,
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
+    }
+
+    .modal-title-group {
+      min-width: 0;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: #101828;
+      font-size: 18px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .modal-subtitle {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .icon-button {
+      display: inline-grid;
+      width: 38px;
+      height: 38px;
+      flex: 0 0 auto;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #ffffff;
+      color: #344054;
+      cursor: pointer;
+    }
+
+    .icon-button:hover {
+      background: #f9fafb;
+    }
+
+    .modal-body {
+      overflow: auto;
+      padding: 16px;
+      background: var(--surface-soft);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #344054;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 300px;
+      resize: vertical;
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius);
+      outline: none;
+      background: #ffffff;
+      color: var(--ink);
+      padding: 12px;
+      font-family: "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 13px;
+      line-height: 1.55;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .draft-info {
+      min-height: 20px;
+      margin-top: 9px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .draft-info.error {
+      color: var(--danger);
+      font-weight: 750;
+    }
+
+    .modal-footer {
+      border-top: 1px solid var(--line);
+      background: #ffffff;
+      justify-content: flex-end;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 120;
+      max-width: min(380px, calc(100vw - 24px));
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: var(--radius);
+      background: #18181b;
+      color: #ffffff;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.4;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast[data-tone="error"] {
+      background: #7a271a;
+    }
+
+    :focus-visible {
+      outline: 3px solid rgba(37, 99, 235, 0.28);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 900px) {
+      .app-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .header-meta {
+        justify-content: flex-start;
+      }
+
+      .command-bar {
+        grid-template-columns: 1fr;
+      }
+
+      .url-link {
+        max-width: 100%;
+        white-space: normal;
+      }
+
+      .card {
+        height: calc(100vh - 130px);
+        min-height: 560px;
+      }
+
+      .card-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .card-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 560px) {
+      h1 {
+        font-size: 23px;
+      }
+
+      .app-header,
+      .command-bar {
+        padding-right: 12px;
+        padding-left: 12px;
+      }
+
+      .brand-row {
+        align-items: flex-start;
+      }
+
+      .brand-mark {
+        width: 40px;
+        height: 40px;
+      }
+
+      .metric {
+        flex: 1 1 136px;
+      }
+
+      .control {
+        flex: 1 1 auto;
+      }
+
+      .main {
+        padding-right: 8px;
+        padding-left: 8px;
+      }
+
+      .card {
+        min-height: 520px;
+      }
+
+      .card-action {
+        flex: 1 1 96px;
+      }
+
+      .card-footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .modal-backdrop {
+        align-items: stretch;
+        padding: 10px;
+      }
+
+      .modal {
+        max-height: calc(100vh - 20px);
+      }
+
+      .modal-header,
+      .modal-footer {
+        padding: 12px;
+      }
+
+      textarea {
+        min-height: 240px;
+      }
+
+      .modal-footer {
+        flex-direction: column-reverse;
+      }
+
+      .modal-footer .control {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">PS</div>
+        <div>
+          <p class="eyebrow">Preview Studio</p>
+          <h1>Website Preview Stack</h1>
+        </div>
+      </div>
+
+      <div class="header-meta" aria-label="Preview summary">
+        <div class="metric"><strong id="totalCount">0</strong><span>Total URLs</span></div>
+        <div class="metric"><strong id="visibleCount">0</strong><span>Showing</span></div>
+        <div class="metric"><span id="storageState">Saved locally</span></div>
+      </div>
+    </header>
+
+    <section class="command-bar" aria-label="Preview controls">
+      <div class="action-row">
+        <button class="control primary" type="button" id="editUrlsBtn"></button>
+        <button class="control secondary" type="button" id="refreshAllBtn"></button>
+        <button class="control danger" type="button" id="resetUrlsBtn"></button>
+      </div>
+
+      <div class="search-box">
+        <span id="searchIcon" aria-hidden="true"></span>
+        <input id="urlFilter" type="search" autocomplete="off" placeholder="Filter URLs" />
+      </div>
+
+      <div class="status-line" id="status" role="status" aria-live="polite"></div>
+    </section>
+
+    <main class="main">
+      <section class="stack" id="stack" aria-live="polite"></section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="urlModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-hidden="true" hidden>
+    <div class="modal" id="modalPanel" tabindex="-1">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <h2 id="modalTitle">Edit URL List</h2>
+          <p class="modal-subtitle">One website per line. Duplicates are removed on save.</p>
+        </div>
+        <button class="icon-button" type="button" id="closeModalBtn" aria-label="Close editor"></button>
+      </div>
+
+      <div class="modal-body">
+        <label for="urlInput">Websites</label>
+        <textarea id="urlInput" spellcheck="false" placeholder="https://example.com"></textarea>
+        <div class="draft-info" id="draftInfo" role="status" aria-live="polite"></div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="control secondary" type="button" id="cancelModalBtn"></button>
+        <button class="control primary" type="button" id="saveUrlsBtn"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const DEFAULT_URLS = [
+      "https://www.indgovtjobs.in/2014/04/it-fresher-jobs.html",
+      "https://govtjobguru.in/government-jobs-openings/"
+    ];
+
+    const STORAGE_KEY = "website_preview_saved_urls_v1";
+
+    const ICONS = {
+      edit: '<path d="M12 20h9"></path><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path>',
+      refresh: '<path d="M21 12a9 9 0 0 1-15.6 6.1"></path><path d="M3 12a9 9 0 0 1 15.6-6.1"></path><path d="M3 18v-6h6"></path><path d="M21 6v6h-6"></path>',
+      reset: '<path d="M3 12a9 9 0 1 0 3-6.7"></path><path d="M3 3v6h6"></path>',
+      search: '<circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path>',
+      external: '<path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>',
+      copy: '<rect width="14" height="14" x="8" y="8" rx="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path>',
+      close: '<path d="M18 6 6 18"></path><path d="m6 6 12 12"></path>',
+      save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"></path><path d="M17 21v-8H7v8"></path><path d="M7 3v5h8"></path>'
+    };
+
+    const stack = document.getElementById("stack");
+    const statusBox = document.getElementById("status");
+    const totalCount = document.getElementById("totalCount");
+    const visibleCount = document.getElementById("visibleCount");
+    const storageState = document.getElementById("storageState");
+    const urlModal = document.getElementById("urlModal");
+    const modalPanel = document.getElementById("modalPanel");
+    const urlInput = document.getElementById("urlInput");
+    const draftInfo = document.getElementById("draftInfo");
+    const urlFilter = document.getElementById("urlFilter");
+    const toast = document.getElementById("toast");
+
+    const editUrlsBtn = document.getElementById("editUrlsBtn");
+    const refreshAllBtn = document.getElementById("refreshAllBtn");
+    const resetUrlsBtn = document.getElementById("resetUrlsBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const saveUrlsBtn = document.getElementById("saveUrlsBtn");
+    const searchIcon = document.getElementById("searchIcon");
+
+    let lastFocusedElement = null;
+    let toastTimer = 0;
+
+    function icon(name) {
+      return '<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">' + ICONS[name] + "</svg>";
+    }
+
+    function setButtonContent() {
+      editUrlsBtn.innerHTML = icon("edit") + "<span>Edit URLs</span>";
+      refreshAllBtn.innerHTML = icon("refresh") + "<span>Refresh All</span>";
+      resetUrlsBtn.innerHTML = icon("reset") + "<span>Reset</span>";
+      closeModalBtn.innerHTML = icon("close");
+      cancelModalBtn.innerHTML = icon("close") + "<span>Cancel</span>";
+      saveUrlsBtn.innerHTML = icon("save") + "<span>Save URLs</span>";
+      searchIcon.innerHTML = icon("search");
+    }
+
+    function readSavedUrlsText() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        storageState.textContent = "Saved locally";
+        return saved === null ? DEFAULT_URLS.join("\n") : saved;
+      } catch (error) {
+        storageState.textContent = "Storage blocked";
+        return DEFAULT_URLS.join("\n");
+      }
+    }
+
+    function writeSavedUrlsText(text) {
+      try {
+        localStorage.setItem(STORAGE_KEY, text);
+        storageState.textContent = "Saved locally";
+        return true;
+      } catch (error) {
+        storageState.textContent = "Storage blocked";
+        showToast("Browser storage is unavailable.", "error");
+        return false;
+      }
+    }
+
+    function clearSavedUrlsText() {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+        storageState.textContent = "Saved locally";
+      } catch (error) {
+        storageState.textContent = "Storage blocked";
+      }
+    }
+
+    function normalizeUrl(rawUrl) {
+      let value = rawUrl.trim();
+
+      if (!value || value.startsWith("#")) {
+        return null;
+      }
+
+      if (!/^https?:\/\//i.test(value)) {
+        value = "https://" + value;
+      }
+
+      try {
+        const parsed = new URL(value);
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+          return null;
+        }
+        return parsed.href;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function parseUrls(text) {
+      const seen = new Set();
+      const urls = [];
+      const invalid = [];
+
+      text.split(/\r?\n/).forEach(function(line, index) {
+        const trimmed = line.trim();
+
+        if (!trimmed || trimmed.startsWith("#")) {
+          return;
+        }
+
+        const normalized = normalizeUrl(trimmed);
+        if (!normalized) {
+          invalid.push({ line: index + 1, value: trimmed });
+          return;
+        }
+
+        const key = normalized.toLowerCase().replace(/\/$/, "");
+        if (!seen.has(key)) {
+          seen.add(key);
+          urls.push(normalized);
+        }
+      });
+
+      return { urls: urls, invalid: invalid };
+    }
+
+    function getHostname(url) {
+      try {
+        return new URL(url).hostname.replace(/^www\./i, "");
+      } catch (error) {
+        return url;
+      }
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function pluralize(count, singular, plural) {
+      return count === 1 ? singular : plural;
+    }
+
+    function updateDraftInfo() {
+      const result = parseUrls(urlInput.value);
+      draftInfo.classList.toggle("error", result.invalid.length > 0);
+
+      if (result.invalid.length > 0) {
+        const firstInvalid = result.invalid[0];
+        draftInfo.textContent = result.invalid.length + " invalid " + pluralize(result.invalid.length, "line", "lines") + ". First issue: line " + firstInvalid.line + ".";
+        return;
+      }
+
+      draftInfo.textContent = result.urls.length + " clean " + pluralize(result.urls.length, "URL", "URLs") + " ready to save.";
+    }
+
+    function renderCards() {
+      const allUrls = parseUrls(readSavedUrlsText()).urls;
+      const query = urlFilter.value.trim().toLowerCase();
+      const visibleUrls = query
+        ? allUrls.filter(function(url) {
+            return url.toLowerCase().includes(query) || getHostname(url).toLowerCase().includes(query);
+          })
+        : allUrls;
+
+      stack.replaceChildren();
+      totalCount.textContent = allUrls.length;
+      visibleCount.textContent = visibleUrls.length;
+
+      if (allUrls.length === 0) {
+        statusBox.textContent = "No URLs saved.";
+        stack.appendChild(createEmptyState("No URLs yet", "Add websites to start building the preview stack.", "Add URLs", openUrlEditor));
+        return;
+      }
+
+      if (visibleUrls.length === 0) {
+        statusBox.textContent = "No matches for \"" + query + "\".";
+        stack.appendChild(createEmptyState("No matching URLs", "Clear the filter or edit the URL list.", "Edit URLs", openUrlEditor));
+        return;
+      }
+
+      visibleUrls.forEach(function(url, index) {
+        stack.appendChild(createPreviewCard(url, index + 1));
+      });
+
+      statusBox.textContent = visibleUrls.length + " of " + allUrls.length + " " + pluralize(allUrls.length, "URL", "URLs") + " showing.";
+    }
+
+    function createEmptyState(title, copy, buttonText, action) {
+      const empty = document.createElement("div");
+      empty.className = "empty-state";
+
+      const inner = document.createElement("div");
+      const heading = document.createElement("h2");
+      const paragraph = document.createElement("p");
+      const button = document.createElement("button");
+
+      heading.textContent = title;
+      paragraph.textContent = copy;
+      button.className = "control primary";
+      button.type = "button";
+      button.innerHTML = icon("edit") + "<span>" + escapeHtml(buttonText) + "</span>";
+      button.addEventListener("click", action);
+
+      inner.append(heading, paragraph, button);
+      empty.appendChild(inner);
+      return empty;
+    }
+
+    function createPreviewCard(url, index) {
+      const host = getHostname(url);
+      const card = document.createElement("article");
+      card.className = "card";
+      card.dataset.url = url;
+
+      card.innerHTML =
+        '<div class="card-header">' +
+          '<div class="card-title">' +
+            '<div class="index-badge">' + index + '</div>' +
+            '<div class="site-meta">' +
+              '<p class="hostname">' + escapeHtml(host) + '</p>' +
+              '<a class="url-link" href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(url) + '</a>' +
+            '</div>' +
+          '</div>' +
+          '<div class="card-actions">' +
+            '<a class="card-action open" href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + icon("external") + '<span>Open</span></a>' +
+            '<button class="card-action" type="button" data-action="copy">' + icon("copy") + '<span>Copy</span></button>' +
+            '<button class="card-action" type="button" data-action="reload">' + icon("refresh") + '<span>Reload</span></button>' +
+          '</div>' +
+        '</div>' +
+        '<div class="frame-box">' +
+          '<div class="frame-loading">Loading preview...</div>' +
+          '<iframe title="Preview of ' + escapeHtml(host) + '" src="' + escapeHtml(url) + '" loading="lazy" referrerpolicy="no-referrer" sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox"></iframe>' +
+        '</div>' +
+        '<div class="card-footer">' +
+          '<span class="pill">' + escapeHtml(host) + '</span>' +
+          '<span>Some sites block embedded previews. Use Open when needed.</span>' +
+        '</div>';
+
+      const iframe = card.querySelector("iframe");
+      iframe.addEventListener("load", function() {
+        card.querySelector(".frame-box").classList.add("loaded");
+      });
+
+      return card;
+    }
+
+    function openUrlEditor() {
+      lastFocusedElement = document.activeElement;
+      urlInput.value = readSavedUrlsText();
+      updateDraftInfo();
+      urlModal.hidden = false;
+      urlModal.setAttribute("aria-hidden", "false");
+      document.body.classList.add("modal-open");
+
+      requestAnimationFrame(function() {
+        urlModal.classList.add("show");
+        modalPanel.focus();
+        urlInput.focus();
+      });
+    }
+
+    function closeUrlEditor() {
+      urlModal.classList.remove("show");
+      urlModal.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("modal-open");
+
+      window.setTimeout(function() {
+        urlModal.hidden = true;
+        if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
+          lastFocusedElement.focus();
+        }
+      }, 170);
+    }
+
+    function saveUrls() {
+      const result = parseUrls(urlInput.value);
+
+      if (result.invalid.length > 0) {
+        updateDraftInfo();
+        showToast("Fix invalid URL lines before saving.", "error");
+        return;
+      }
+
+      const cleanedText = result.urls.join("\n");
+      if (writeSavedUrlsText(cleanedText)) {
+        closeUrlEditor();
+        renderCards();
+        showToast(result.urls.length + " " + pluralize(result.urls.length, "URL", "URLs") + " saved.");
+      }
+    }
+
+    function refreshAllFrames() {
+      const frames = stack.querySelectorAll("iframe");
+      frames.forEach(function(frame) {
+        frame.closest(".frame-box").classList.remove("loaded");
+        frame.src = frame.src;
+      });
+
+      if (frames.length > 0) {
+        showToast(frames.length + " " + pluralize(frames.length, "preview", "previews") + " refreshed.");
+      }
+    }
+
+    function reloadCard(card) {
+      const frame = card.querySelector("iframe");
+      const frameBox = card.querySelector(".frame-box");
+
+      if (!frame) {
+        return;
+      }
+
+      frameBox.classList.remove("loaded");
+      frame.src = card.dataset.url;
+      showToast("Preview refreshed.");
+    }
+
+    async function copyUrl(url) {
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast("URL copied.");
+      } catch (error) {
+        const helper = document.createElement("textarea");
+        helper.value = url;
+        helper.setAttribute("readonly", "");
+        helper.style.position = "fixed";
+        helper.style.left = "-9999px";
+        document.body.appendChild(helper);
+        helper.select();
+        const copied = document.execCommand("copy");
+        helper.remove();
+        showToast(copied ? "URL copied." : "Copy failed.", copied ? "default" : "error");
+      }
+    }
+
+    function resetUrls() {
+      if (!window.confirm("Reset the URL list to the defaults?")) {
+        return;
+      }
+
+      clearSavedUrlsText();
+      urlFilter.value = "";
+      renderCards();
+      showToast("Default URLs restored.");
+    }
+
+    function showToast(message, tone) {
+      window.clearTimeout(toastTimer);
+      toast.textContent = message;
+      toast.dataset.tone = tone || "default";
+      toast.classList.add("show");
+      toastTimer = window.setTimeout(function() {
+        toast.classList.remove("show");
+      }, 2600);
+    }
+
+    function handleStackClick(event) {
+      const actionButton = event.target.closest("[data-action]");
+      if (!actionButton) {
+        return;
+      }
+
+      const card = actionButton.closest(".card");
+      if (!card) {
+        return;
+      }
+
+      const action = actionButton.dataset.action;
+      if (action === "copy") {
+        copyUrl(card.dataset.url);
+      }
+      if (action === "reload") {
+        reloadCard(card);
+      }
+    }
+
+    function trapModalFocus(event) {
+      if (event.key !== "Tab" || urlModal.hidden) {
+        return;
+      }
+
+      const focusable = Array.from(urlModal.querySelectorAll('button, textarea, [href], input, [tabindex]:not([tabindex="-1"])'))
+        .filter(function(element) {
+          return !element.disabled && element.offsetParent !== null;
+        });
+
+      if (focusable.length === 0) {
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    editUrlsBtn.addEventListener("click", openUrlEditor);
+    refreshAllBtn.addEventListener("click", refreshAllFrames);
+    resetUrlsBtn.addEventListener("click", resetUrls);
+    closeModalBtn.addEventListener("click", closeUrlEditor);
+    cancelModalBtn.addEventListener("click", closeUrlEditor);
+    saveUrlsBtn.addEventListener("click", saveUrls);
+    urlInput.addEventListener("input", updateDraftInfo);
+    urlFilter.addEventListener("input", renderCards);
+    stack.addEventListener("click", handleStackClick);
+
+    urlModal.addEventListener("mousedown", function(event) {
+      if (event.target === urlModal) {
+        closeUrlEditor();
+      }
+    });
+
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape" && !urlModal.hidden) {
+        closeUrlEditor();
+      }
+      trapModalFocus(event);
+    });
+
+    setButtonContent();
+    renderCards();
+  </script>
+</body>
+</html>
