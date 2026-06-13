@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Website Preview Studio</title>
+  <title>FindGovtJob</title>
+  <meta name="theme-color" content="#0f766e" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f766e'/%3E%3Ccircle cx='29' cy='29' r='16' fill='none' stroke='white' stroke-width='6'/%3E%3Cpath d='M42 42l11 11' stroke='white' stroke-width='6' stroke-linecap='round'/%3E%3Cpath d='M21 28h16M25 22h8M24 34h10' stroke='%23d8fff4' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E" />
 
   <style>
     :root {
@@ -87,18 +89,38 @@
     }
 
     .brand-mark {
+      position: relative;
       display: grid;
       width: 44px;
       height: 44px;
       flex: 0 0 auto;
       place-items: center;
-      border-radius: 12px;
-      background: linear-gradient(135deg, var(--accent), #1f7a49);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 14px;
+      background:
+        radial-gradient(circle at 28% 22%, rgba(255, 255, 255, 0.32), transparent 28%),
+        linear-gradient(135deg, var(--accent), #1f7a49);
       color: #ffffff;
-      font-size: 14px;
-      font-weight: 800;
-      letter-spacing: 0;
       box-shadow: 0 12px 26px rgba(15, 118, 110, 0.24);
+    }
+
+    .brand-mark::after {
+      position: absolute;
+      inset: auto -8px -10px auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.16);
+      content: "";
+    }
+
+    .brand-mark svg {
+      position: relative;
+      z-index: 1;
+      width: 31px;
+      height: 31px;
+      filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.16));
     }
 
     .eyebrow {
@@ -752,10 +774,19 @@
   <div class="app-shell">
     <header class="app-header">
       <div class="brand-row">
-        <div class="brand-mark" aria-hidden="true">PS</div>
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <path d="M13 20.5h16.5c2.8 0 5 2.2 5 5v6.2c0 2.8-2.2 5-5 5H13c-2.8 0-5-2.2-5-5v-6.2c0-2.8 2.2-5 5-5Z" fill="rgba(255,255,255,0.96)" />
+            <path d="M17.5 20.5v-2.6c0-2.3 1.9-4.2 4.2-4.2h5.1c2.3 0 4.2 1.9 4.2 4.2v2.6" stroke="#d8fff4" stroke-width="3.2" stroke-linecap="round" />
+            <path d="M16 28.3h10.8M16 33h7.5" stroke="#0f766e" stroke-width="3.2" stroke-linecap="round" />
+            <circle cx="32.6" cy="30.2" r="6.2" fill="#f7fbff" stroke="#0f766e" stroke-width="3.1" />
+            <path d="m37.2 35 5 5" stroke="#f7fbff" stroke-width="4.2" stroke-linecap="round" />
+            <path d="m37.2 35 5 5" stroke="#0f766e" stroke-width="2.6" stroke-linecap="round" />
+          </svg>
+        </div>
         <div>
-          <p class="eyebrow">Preview Studio</p>
-          <h1>Website Preview Stack</h1>
+          <p class="eyebrow">Job Board Preview</p>
+          <h1>FindGovtJob</h1>
         </div>
       </div>
 
